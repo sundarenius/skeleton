@@ -1,0 +1,12 @@
+body {
+  margin: 0;
+  font-family: Lato,"Helvetica Neue",Arial,Helvetica,sans-serif!important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px!important;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

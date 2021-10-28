@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Get absolute path of the script
+dir=`dirname $0`            # The directory where the script is 
+pushd "$dir" > /dev/null    # Go there
+CURRENT_PATH=$PWD             # Record the absolute path
+popd > /dev/null            # Return to previous dir
+
+echo $CURRENT_PATH
+
+pwd
+
+declare -a commands=(
+  react-ts
+  express-ts
+)
+
+case $1 in
+
+  ${commands[0]})
+    cp -R `$CURRENT_PATH/templates/frontend/react-ts` pwd
+    ;;
+
+  ${commands[1]})
+    echo "/usr/local/Cellar"
+    echo "bp = brew packages"
+    echo
+    ls /usr/local/Cellar
+    ;;
+
+  *)
+    echo Found no matching arguments, this is a bash script
+    echo Available commands to generate project templates:
+    echo
+    printf '%s\n' "${commands[@]}"
+    ;;
+esac

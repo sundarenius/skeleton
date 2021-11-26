@@ -1,10 +1,10 @@
 {
-  "name": "@goozt/server",
+  "name": "@myproject/server",
   "version": "1.0.0",
-  "description": "Boilerplate cli project",
+  "description": "New backend node ts project",
   "author": "",
   "license": "ISC",
-  "main": ".dist/bin/boilerplate.js",
+  "main": ".dist/bin/www.js",
   "private": true,
   "files": [
     "dist"

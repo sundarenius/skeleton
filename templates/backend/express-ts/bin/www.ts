@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-import app from '../src/main';
+import app from '../models/main';
 
 /**
   * Get port from environment and store in Express.

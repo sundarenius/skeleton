@@ -4,7 +4,7 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cors from 'cors';
-import apiRouter from './routes/api-router';
+import apiRouter from '../controllers/routes/api-router';
 
 // eslint-disable-next-line no-underscore-dangle
 

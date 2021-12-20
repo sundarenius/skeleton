@@ -9,23 +9,16 @@ import {
   Dimmer,
   Loader,
 } from 'semantic-ui-react';
-import { checkInitAuth } from './utils/auth-helpers';
-import { Paths } from 'types/globals';
-import pollyFills from 'utils/pollyfills';
-
-pollyFills();
 
 const App = React.lazy(() => import('./App'));
-const Program = React.lazy(() => import('./pages/Program'));
-const ProgramPrint = React.lazy(() => import('./pages/ProgramPrint'));
-const LoginPage = React.lazy(() => import('./components/Login'));
+
 const Loading:FC = () => (
   <Dimmer active>
-    <Loader size="medium">Verifierar ...</Loader>
+    <Loader size="medium">Laddar ...</Loader>
   </Dimmer>
 );
 
-const renderDom = (content: JSX.Element) => ReactDOM!.render(
+const renderDom = (content: JSX.Element) => ReactDOM.render(
   (
     <React.Suspense fallback={<Loading />}>
       {content}
@@ -34,40 +27,12 @@ const renderDom = (content: JSX.Element) => ReactDOM!.render(
   document.getElementById('root'),
 );
 
-const getCmpnt = () => {
-  const path = window.location.pathname;
-  switch (path) {
-    case Paths.PROGRAM:
-      return Program;
-    case Paths.PROGRAM_PRINT:
-      return ProgramPrint;
-    default:
-      return App;
-  }
-};
-
 const renderApp = () => {
-  const Cmpnt = getCmpnt();
   renderDom(
     <Provider store={store}>
-      <Cmpnt />
+      <App />
     </Provider>,
   );
 };
 
-const renderLogin = () => {
-  renderDom(<LoginPage />);
-};
-
-const initAuth = async () => {
-  renderDom(<Loading />);
-  const isAuth = await checkInitAuth();
-
-  if (isAuth) {
-    renderApp();
-  } else {
-    renderLogin();
-  }
-};
-
-initAuth();
+renderApp();

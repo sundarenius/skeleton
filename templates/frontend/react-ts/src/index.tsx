@@ -18,14 +18,16 @@ const Loading:FC = () => (
   </Dimmer>
 );
 
-const renderDom = (content: JSX.Element) => ReactDOM.render(
-  (
-    <React.Suspense fallback={<Loading />}>
-      {content}
-    </React.Suspense>
-  ),
-  document.getElementById('root'),
-);
+const renderDom = (content: JSX.Element) => {
+  ReactDOM.render(
+    (
+      <React.Suspense fallback={<Loading />}>
+        {content}
+      </React.Suspense>
+    ),
+    document.getElementById('root'),
+  );
+};
 
 const renderApp = () => {
   renderDom(

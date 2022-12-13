@@ -26,3 +26,11 @@ const renderApp = () => {
 };
 
 renderApp();
+
+declare global {
+  interface Window {
+    IS_BELOW_SM: any;
+  }
+}
+
+window.IS_BELOW_SM = window.innerWidth <= 600;

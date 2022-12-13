@@ -3,14 +3,14 @@ import { alpha, lighten, darken } from '@mui/material';
 import '@mui/lab/themeAugmentation';
 
 const themeColors = {
-  primary: '#5569ff',
+  // primary: '#5569ff',
+  primary: '#ffffff',
   secondary: '#6E759F',
   success: '#57CA22',
   warning: '#FFA319',
   error: '#FF1943',
   info: '#33C2FF',
   black: '#223354',
-  // black: '#252e70',
   white: '#ffffff',
   primaryAlt: '#252e70',
 };

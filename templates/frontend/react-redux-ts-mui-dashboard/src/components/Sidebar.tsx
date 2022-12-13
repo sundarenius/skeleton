@@ -14,12 +14,14 @@ import { PostMessageEvents } from 'types/globals';
 interface Props {
   drawerwidth,
   open,
+  handleDrawerClose,
   children: ReactNode,
 }
 
 const Sidebar:FC<Props> = ({
   drawerwidth,
   open,
+  handleDrawerClose,
   children,
 }): JSX.Element => {
   const navTo = (path: string) => {
@@ -27,6 +29,7 @@ const Sidebar:FC<Props> = ({
       eventType: PostMessageEvents.ROUTE_NAVIGATE,
       path: `${path}${window.location.search}`,
     }, '*');
+    if (window.IS_BELOW_SM) handleDrawerClose();
   };
 
   return (
@@ -39,8 +42,9 @@ const Sidebar:FC<Props> = ({
           boxSizing: 'border-box',
         },
       }}
-      variant="persistent"
+      variant={window.IS_BELOW_SM ? 'temporary' : 'persistent'}
       anchor="left"
+      // open={window.IS_BELOW_SM ? !open : open}
       open={open}
     >
       { children }

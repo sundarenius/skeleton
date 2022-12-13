@@ -6,6 +6,8 @@ import {
   IconButton,
   Typography,
   Button,
+  Box,
+  Divider,
 } from '@mui/material';
 import {
   Menu,
@@ -14,7 +16,9 @@ import {
 } from '@mui/icons-material';
 import { useAppSelector, useAppDispatch } from 'redux/redux-hooks';
 import { contextActions } from 'redux/actions';
-import { ThemeModes } from 'types/globals';
+import type { ThemeModes } from 'types/globals';
+import MerchantDropdown from 'components/MerchantDropdown';
+import AccountDropdown from 'components/AccountDropdown';
 
 interface Props extends MuiAppBarProps {
   open?: boolean;
@@ -22,7 +26,7 @@ interface Props extends MuiAppBarProps {
 }
 
 const AppBar = styled(MuiAppBar)<Props>(({ theme, open, drawerwidth }) => {
-  const isBelowSm = window.innerWidth <= theme.breakpoints.values.sm;
+  const isBelowSm = window.IS_BELOW_SM;
   return {
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
@@ -34,7 +38,7 @@ const AppBar = styled(MuiAppBar)<Props>(({ theme, open, drawerwidth }) => {
     justifyContent: 'center',
     padding: '0 30px',
     ...(open && {
-      width: `calc(100% - ${drawerwidth}px)`,
+      width: isBelowSm ? '100%' : `calc(100% - ${drawerwidth}px)`,
       marginLeft: `${drawerwidth}px`,
       transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.easeOut,
@@ -70,11 +74,21 @@ const HeaderContent = ({
       </Typography>
 
       <Button
+        className="mr-1"
         onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}
         color="inherit"
       >
         { themeMode === 'dark' ? <LightMode /> : <DarkMode />}
       </Button>
+
+      <Divider className="mr-3" orientation="vertical" flexItem />
+
+      <Box className="mx-1">
+        <MerchantDropdown />
+      </Box>
+
+      <AccountDropdown />
+
     </Toolbar>
   );
 };

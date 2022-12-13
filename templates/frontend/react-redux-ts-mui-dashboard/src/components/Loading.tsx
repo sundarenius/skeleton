@@ -1,9 +1,11 @@
 import type { FC } from 'react';
 import { CircularProgress, Box } from '@mui/material';
 
-interface Props {}
+interface Props {
+  text?: string
+}
 
-const Loading:FC<Props> = (): JSX.Element => (
+const Loading:FC<Props> = ({ text }): JSX.Element => (
   <Box sx={{
     display: 'flex',
     height: '100vh',
@@ -14,7 +16,7 @@ const Loading:FC<Props> = (): JSX.Element => (
   }}
   >
     <CircularProgress size={60} style={{ marginTop: '-15%' }} />
-    <p style={{ marginTop: '40px' }}>Loading ...</p>
+    <p style={{ marginTop: '40px' }}>{text || 'Loading ...'}</p>
   </Box>
 );
 

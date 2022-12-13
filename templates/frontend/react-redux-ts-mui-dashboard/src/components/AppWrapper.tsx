@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import * as React from 'react';
+import { useState } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import {
   Box,
@@ -24,7 +24,7 @@ const MainContent = styled('main', { shouldForwardProp: (prop) => prop !== 'open
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  marginLeft: `-${drawerwidth}px`,
+  marginLeft: window.IS_BELOW_SM ? '0' : `-${drawerwidth}px`,
   ...(open && {
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
@@ -45,7 +45,7 @@ const SpaceFromHeader = styled('div')(({ theme }) => ({
 
 const AppWrapper = ({ children }) => {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(!window.IS_BELOW_SM);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -61,20 +61,8 @@ const AppWrapper = ({ children }) => {
 
       <Header drawerwidth={drawerwidth} position="fixed" open={open} handleDrawerOpen={handleDrawerOpen} />
 
-      <Sidebar drawerwidth={drawerwidth} open={open}>
-        <SpaceFromHeader>
-          <div style={{
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'space-between',
-          }}
-          >
-            <p>MyApp</p>
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
-          </div>
-        </SpaceFromHeader>
+      <Sidebar drawerwidth={drawerwidth} open={open} handleDrawerClose={handleDrawerClose}>
+        <SideBarHeader theme={theme} handleDrawerClose={handleDrawerClose} />
       </Sidebar>
 
       <MainContent open={open}>
@@ -85,5 +73,21 @@ const AppWrapper = ({ children }) => {
     </Box>
   );
 };
+
+const SideBarHeader = ({ theme, handleDrawerClose }) => (
+  <SpaceFromHeader>
+    <div style={{
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'space-between',
+    }}
+    >
+      <p>MyApp</p>
+      <IconButton onClick={handleDrawerClose}>
+        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+      </IconButton>
+    </div>
+  </SpaceFromHeader>
+);
 
 export default AppWrapper;

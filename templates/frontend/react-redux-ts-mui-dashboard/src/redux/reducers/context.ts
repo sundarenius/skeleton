@@ -4,10 +4,12 @@ import type { ThemeModes } from 'types/globals';
 
 interface InitialState {
   themeMode: ThemeModes,
+  merchant: string,
 }
 
 const initialState: InitialState = {
   themeMode: 'dark',
+  merchant: '',
 };
 
 export const contextSlice = createSlice({
@@ -16,6 +18,9 @@ export const contextSlice = createSlice({
   reducers: {
     setThemeMode: (state, action: PayloadAction<ThemeModes>) => {
       state.themeMode = action.payload;
+    },
+    setMerchant: (state, action: PayloadAction<string>) => {
+      state.merchant = action.payload;
     },
   },
 });

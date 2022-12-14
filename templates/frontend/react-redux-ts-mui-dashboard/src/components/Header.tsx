@@ -70,7 +70,7 @@ const HeaderContent = ({
         <Menu />
       </IconButton>
       <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-        Persistent drawer
+        {/* Persistent drawer */}
       </Typography>
 
       {!window.IS_BELOW_SM && (

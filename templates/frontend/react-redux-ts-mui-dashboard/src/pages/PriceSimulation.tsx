@@ -1,13 +1,14 @@
 import type { FC } from 'react';
+import BlockContainer from 'components/BlockContainer';
 
 interface Props {}
 
 const Another:FC<Props> = (): JSX.Element => {
-  const txt = 'Another page';
+  const txt = 'Price Simulation page';
   return (
-    <div id="another-container">
+    <BlockContainer>
       <h3>{txt}</h3>
-    </div>
+    </BlockContainer>
   );
 };
 

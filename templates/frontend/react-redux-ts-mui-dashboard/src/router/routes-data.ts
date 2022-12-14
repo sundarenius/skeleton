@@ -10,7 +10,7 @@ import type {
 } from 'react-router-dom';
 
 const Home = lazy(() => import('pages/Home'));
-const Another = lazy(() => import('pages/Another'));
+const PriceSimulation = lazy(() => import('pages/PriceSimulation'));
 
 console.log(Paths);
 
@@ -30,7 +30,7 @@ const routerData: IRouterData[] = [
   {
     name: 'Simulation',
     path: Paths.PRICE_SIMULATION,
-    element: Another,
+    element: PriceSimulation,
     icon: AutoAwesome,
   },
 ];

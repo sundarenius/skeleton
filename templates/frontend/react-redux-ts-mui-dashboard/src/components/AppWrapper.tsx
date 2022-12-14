@@ -19,7 +19,7 @@ const MainContent = styled('main', { shouldForwardProp: (prop) => prop !== 'open
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
-  padding: theme.spacing(3),
+  padding: theme.spacing(1.5),
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -82,7 +82,7 @@ const SideBarHeader = ({ theme, handleDrawerClose }) => (
       justifyContent: 'space-between',
     }}
     >
-      <p>MyApp</p>
+      <p>LH price opimisation</p>
       <IconButton onClick={handleDrawerClose}>
         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
       </IconButton>

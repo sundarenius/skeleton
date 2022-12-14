@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { Paths } from 'types/globals';
 import {
   MoveToInbox,
-  Mail,
+  AutoAwesome,
 } from '@mui/icons-material';
 import type {
   RouteObject,
@@ -28,10 +28,10 @@ const routerData: IRouterData[] = [
     icon: MoveToInbox,
   },
   {
-    name: 'Another',
-    path: Paths.ANOTHER,
+    name: 'Simulation',
+    path: Paths.PRICE_SIMULATION,
     element: Another,
-    icon: Mail,
+    icon: AutoAwesome,
   },
 ];
 
@@ -46,7 +46,7 @@ export const sideBarNav = [
   {
     name: 'Section 2',
     navs: [
-      routeData(Paths.ANOTHER),
+      routeData(Paths.PRICE_SIMULATION),
     ],
   },
 ];

@@ -8,19 +8,22 @@ import {
 
 const MerchantDropdown = () => {
   const dispatch = useAppDispatch();
-  const merchant = useAppSelector(({ context }) => context.merchant);
+  const {
+    merchant,
+    allCustomers,
+  } = useAppSelector(({ context }) => context);
 
   const handleChange = (event: SyntheticEvent, value) => {
-    dispatch(contextActions.setMerchant(value.label));
+    dispatch(contextActions.setMerchant(value));
   };
 
   return (
     <Autocomplete
-      value={{ label: merchant }}
+      value={merchant}
       disablePortal
       disableClearable
       id="combo-box-dropdown"
-      options={customers}
+      options={allCustomers}
       sx={{ width: 200 }}
       onChange={handleChange}
       size="small"
@@ -29,17 +32,5 @@ const MerchantDropdown = () => {
     />
   );
 };
-
-const customers = [
-  {
-    label: 'Apotea',
-  },
-  {
-    label: 'Apoteket',
-  },
-  {
-    label: 'Snusbolaget',
-  },
-];
 
 export default MerchantDropdown;

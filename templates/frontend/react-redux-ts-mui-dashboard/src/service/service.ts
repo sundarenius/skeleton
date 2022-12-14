@@ -1,4 +1,14 @@
 import config from 'config';
+import { store } from 'redux/store';
+import { contextActions } from 'redux/actions';
+import { WebStorageKeys } from 'types/globals';
+import { getWebStorage } from 'utils/helpers';
+
+const getUserToken = () => {
+  const authToken = getWebStorage(WebStorageKeys.SESSION_DATA) || {};
+  const authAsBase64 = window.btoa(authToken.USER_TOKEN);
+  return authAsBase64;
+};
 
 enum MethodTypes {
   GET = 'GET',
@@ -8,14 +18,7 @@ enum MethodTypes {
 
 const baseUrl = `${config[process.env.NODE_ENV].apiEndpoint}/api`;
 
-const buildUrl = (path) => {
-  const token = () => window.localStorage.token || null;
-  const getToken = token();
-  if (getToken) {
-    return `${baseUrl}${path}${path.includes('&') ? '&' : '?'}token=${token()}`;
-  }
-  return `${baseUrl}${path}`;
-};
+const buildUrl = (path) => `${baseUrl}${path}`;
 
 const fetchMethod = async (path, method, payload) => {
   try {
@@ -23,6 +26,7 @@ const fetchMethod = async (path, method, payload) => {
       method,
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Basic ${getUserToken()}`,
       },
       ...payload && { body: JSON.stringify(payload) },
     });
@@ -35,8 +39,19 @@ const fetchMethod = async (path, method, payload) => {
   }
 };
 
-export const getSomething = async (x, y) => {
-  const path = `/meetings?month=${x}&year=${y}`;
-  const data = await fetchMethod(path, MethodTypes.GET, null);
-  return data;
+const setIsFetching = (what: boolean) => store.dispatch(contextActions.setIsFetchingData(what));
+
+export const API = {
+  login: async () => {
+    const path = '/login';
+    const data = await fetchMethod(path, MethodTypes.GET, null);
+    return data;
+  },
+  getMerchantData: async () => {
+    setIsFetching(true);
+    const path = '/merchant-data';
+    const data = await fetchMethod(path, MethodTypes.GET, null);
+    setIsFetching(false);
+    return data;
+  },
 };

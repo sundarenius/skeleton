@@ -73,21 +73,25 @@ const HeaderContent = ({
         Persistent drawer
       </Typography>
 
-      <Button
-        className="mr-1"
-        onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}
-        color="inherit"
-      >
-        { themeMode === 'dark' ? <LightMode /> : <DarkMode />}
-      </Button>
+      {!window.IS_BELOW_SM && (
+      <>
+        <Button
+          className="mr-1"
+          onClick={() => setThemeMode(themeMode === 'dark' ? 'light' : 'dark')}
+          color="inherit"
+        >
+          { themeMode === 'dark' ? <LightMode /> : <DarkMode />}
+        </Button>
 
-      <Divider className="mr-3" orientation="vertical" flexItem />
+        <Divider className="mr-3" orientation="vertical" flexItem />
 
-      <Box className="mx-1">
-        <MerchantDropdown />
-      </Box>
+        <Box className="mx-1">
+          <MerchantDropdown />
+        </Box>
 
-      <AccountDropdown />
+        <AccountDropdown />
+      </>
+      )}
 
     </Toolbar>
   );

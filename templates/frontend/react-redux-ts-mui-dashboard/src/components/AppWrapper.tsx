@@ -19,7 +19,7 @@ const MainContent = styled('main', { shouldForwardProp: (prop) => prop !== 'open
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
-  padding: theme.spacing(1.5),
+  padding: theme.spacing(2.5),
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,

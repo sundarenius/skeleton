@@ -1,52 +1,48 @@
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
-import mongoOperations from './operations';
-import { OperationTypes } from '../types/mongo-types';
+import mongoTransactions from './transactions';
+import { MongoDbTransactionTypes } from '../types/mongo-types';
 
 dotenv.config();
 
 const url:string = process.env.NODE_ENV === 'production'
   ? process.env.MONGO_ATLAS_URL as string
-  : 'mongodb://admin:admin@localhost:27017';
-
-const client = new MongoClient(url);
+  : 'mongodb://localhost:27017';
 
 const connectMongo = async ({
   operation,
-  data,
+  newData,
+  dataSearch,
   dbName,
   collectionName,
-  newData,
+  collectionCallback,
 }: any) => {
+  const client = new MongoClient(url);
   await client.connect();
   console.log('Connected successfully to mongodb server');
 
   const db = client.db(dbName);
   const collection = db.collection(collectionName);
 
-  const operations = mongoOperations(collection);
+  const transactions = mongoTransactions(collection);
 
-  const res = await operations[operation as OperationTypes || OperationTypes.FIND](data, newData);
+  const res = await transactions[operation as MongoDbTransactionTypes
+    || MongoDbTransactionTypes.FIND](newData, dataSearch, collectionCallback);
 
   const resData = {
     success: true,
     db: dbName,
     collection: collectionName,
-    type: `Type of operation: ${operation || OperationTypes.FIND}`,
+    type: `Type of operation: ${operation || MongoDbTransactionTypes.FIND}`,
     res,
   };
 
   console.log('Log from connectMongo function:');
   console.log(JSON.stringify(resData, null, 4));
 
-  return res;
-};
+  await client.close()
 
-const closeClient = async () => {
-  if (client) {
-    // await client.close()
-    console.log('Closed mongoDb client');
-  }
+  return res;
 };
 
 const mongoInstance = async (parameters: any) => {
@@ -55,10 +51,7 @@ const mongoInstance = async (parameters: any) => {
     return res;
   } catch (err) {
     console.error(err);
-    closeClient();
     throw new Error(err as any);
-  } finally {
-    closeClient();
   }
 };
 

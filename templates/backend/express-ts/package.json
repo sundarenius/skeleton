@@ -12,12 +12,16 @@
   "scripts": {
     "dev": "tsc-watch --onSuccess \"node dist/bin/www.js\"",
     "build": "tsc",
-    "start": "yarn build && node dist/bin/www.js",
+    "start:dev": "yarn build && NODE_ENV=development node dist/bin/www.js",
+    "start:test": "yarn build && NODE_ENV=test node dist/bin/www.js",
+    "start:staging": "yarn build && NODE_ENV=staging node dist/bin/www.js",
+    "start:prod": "yarn build && NODE_ENV=production node dist/bin/www.js",
     "lint:check": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix"
   },
   "keywords": [],
   "dependencies": {
+    "cli-color": "^2.0.3",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "debug": "^4.3.2",
@@ -33,6 +37,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/cli-color": "^2.0.2",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",

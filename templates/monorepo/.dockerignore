@@ -1,0 +1,9 @@
+**/node_modules
+**/.DS_Store
+**/certs
+**/.env
+data
+# Local Netlify folder
+.netlify
+
+docker-compose.yml

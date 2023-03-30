@@ -1,6 +1,5 @@
 import createError from 'http-errors';
 import express from 'express';
-import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cors from 'cors';
@@ -9,10 +8,6 @@ import apiRouter from '../controllers/routes/api-router';
 // eslint-disable-next-line no-underscore-dangle
 
 const app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
 const whiteListedOrigins: string[] = [
   'http://localhost:5000',
@@ -41,7 +36,7 @@ app.use((res: any, req: any, next: any) => {
   next();
 });
 
-app.use('/api', apiRouter);
+app.use('/api/v1', apiRouter);
 
 app.use((req: any, res: any, next: any) => {
   next(createError(404));

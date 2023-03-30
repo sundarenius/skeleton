@@ -1,11 +1,18 @@
 import express from 'express';
+import type { Response, Request } from 'express';
+import { formatResponse } from '../../models/utils/helpers';
+import { domains } from '../../models/domains';
 
-const router = express.Router();
+const apiRouter = express.Router();
 
-/* GET home page. */
-router.post('/', (req: any, res: any) => {
-  console.log(req.body);
-  res.send({ success: true });
+apiRouter.post('/', async (req: Request, res: Response) => {
+  const { body, statusCode } = await domains.login(req.body);
+  formatResponse(body, statusCode, res);
 });
 
-export default router;
+apiRouter.get('/', async (req: Request, res: Response) => {
+  const { body, statusCode } = await domains.login(req.query);
+  formatResponse(body, statusCode, res);
+});
+
+export default apiRouter;

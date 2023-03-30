@@ -1,0 +1,18 @@
+{
+  "name": "@myapp/monorepo",
+  "version": "1.0.0",
+  "description": "Monorepo with apps in workspaces folder",
+  "author": "Håkan Sundström<sundarenius@gmail.com>",
+  "scripts": {
+    "start": "sh -c 'cd ./workspaces/server && yarn start:prod-and-serve'",
+    "start:server": "sh -c 'cd ./workspaces/server && yarn start:prod'",
+    "deploy": "sh -c './deploy.sh'"
+  },
+  "private": true,
+  "workspaces": [
+    "workspaces/*"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

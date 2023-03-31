@@ -3,22 +3,22 @@ import {
   Dbs,
   Collections,
   MongoDbTransactionTypes,
-} from '../../types/mongo-types';
+} from '../../../types/mongo-types';
 import { logMongoEvent } from './index';
 
-const createDummyData = async (dummyVal: string) => {
+const simpleCreate = async <IData>(newData: IData, db: typeof Dbs, collection: Collections) => {
   const res: Array<unknown> = await MongoInstance({
     operation: MongoDbTransactionTypes.INSERT_ONE,
-    dbName: Dbs.TEST_DB,
-    collectionName: Collections.TEST_COLLECTION,
-    newData: { dummyVal },
+    dbName: db,
+    collectionName: collection,
+    newData,
   });
 
-  logMongoEvent(`Created ${dummyVal}`);
+  logMongoEvent(`Created ${newData}`);
   console.log(res);
   return res;
 };
 
 export const MongoCreateAPI = {
-  createDummyData
+  simpleCreate
 };

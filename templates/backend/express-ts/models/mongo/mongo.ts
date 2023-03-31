@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 import mongoTransactions from './transactions';
-import { MongoDbTransactionTypes } from '../types/mongo-types';
+import { MongoDbTransactionTypes } from '../../types/mongo-types';
 
 dotenv.config();
 

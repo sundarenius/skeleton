@@ -1,18 +1,16 @@
-import { HttpStatusCodes, TPayload } from '../types/globals';
+import { HttpStatusCodes, IPayload } from '../../types/globals';
 import login from './login';
 import main from './main';
+import dummy from './dummy';
 
-let httpFailedStatus = HttpStatusCodes.INTERNAL_SERVER_ERROR;
-export const setHttpFailedStatus = (failedStatus: HttpStatusCodes) => { httpFailedStatus = failedStatus };
-
-export const formatRes = (body: TPayload, statusCode: HttpStatusCodes) => {
+export const formatRes = (body: IPayload['payload'], statusCode: HttpStatusCodes) => {
   return {
     body,
     statusCode
   }
 }
 
-const catchWrapper = async (callback: any, payload: TPayload) => {
+const catchWrapper = async (callback: any, payload: IPayload) => {
   try {
     return await callback(payload);
   } catch (err: any) {
@@ -20,11 +18,15 @@ const catchWrapper = async (callback: any, payload: TPayload) => {
       errorMsg: err.message,
     };
     
-    return formatRes(body, httpFailedStatus);
+    // status can be set as throw new Error(`some message ${statusCode}`) (last index in message)
+    const splitted = err.message.split(' ');
+    const failedStatus = Number(splitted[splitted.length - 1]) || HttpStatusCodes.INTERNAL_SERVER_ERROR;
+    return formatRes(body, failedStatus);
   }
 }
 
 export const domains = {
-  main: (payload: Record<any, any>) => catchWrapper(main, payload),
-  login: (payload: Record<any, any>) => catchWrapper(login, payload),
+  main: (payload: IPayload) => catchWrapper(main, payload),
+  login: (payload: IPayload) => catchWrapper(login, payload),
+  dummy: (payload: IPayload) => catchWrapper(dummy, payload),
 };

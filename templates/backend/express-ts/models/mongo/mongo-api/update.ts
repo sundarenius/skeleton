@@ -3,23 +3,23 @@ import {
   Dbs,
   Collections,
   MongoDbTransactionTypes,
-} from '../../types/mongo-types';
+} from '../../../types/mongo-types';
 import { logMongoEvent } from './index';
 
-const updateDummyData = async (newDummyVal: string, dummyVal: string) => {
+const simpleUpdate = async <IData>(newData: IData, prevData: IData, db: typeof Dbs, collection: Collections) => {
   const res: Array<unknown> = await MongoInstance({
     operation: MongoDbTransactionTypes.UPDATE_ONE,
-    dbName: Dbs.TEST_DB,
-    collectionName: Collections.TEST_COLLECTION,
-    dataSearch: { dummyVal },
-    newData: { dummyVal: newDummyVal },
+    dbName: db,
+    collectionName: collection,
+    dataSearch: prevData,
+    newData: newData,
   });
 
-  logMongoEvent(`Updated ${dummyVal} to ${newDummyVal} from DB`);
+  logMongoEvent(`Updated ${prevData} to ${newData} from DB`);
   console.log(res);
   return res;
 };
 
 export const MongoUpdateAPI = {
-  updateDummyData
+  simpleUpdate
 };

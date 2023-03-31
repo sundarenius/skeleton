@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { MongoDbTransactionTypes } from '../types/mongo-types';
+import { MongoDbTransactionTypes } from '../../types/mongo-types';
 
 const mongoTransactions = (collection: any): Record<MongoDbTransactionTypes, any> => ({
   [MongoDbTransactionTypes.INSERT_MANY]: async (newData: any) => {

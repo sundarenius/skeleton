@@ -3,22 +3,22 @@ import {
   Dbs,
   Collections,
   MongoDbTransactionTypes,
-} from '../../types/mongo-types';
+} from '../../../types/mongo-types';
 import { logMongoEvent } from './index';
 
-const getDummyData = async (dummyVal: string) => {
+const simpleGet = async <IData>(data: IData, db: typeof Dbs, collection: Collections) => {
   const res: Array<unknown> = await MongoInstance({
     operation: MongoDbTransactionTypes.FIND,
-    dbName: Dbs.TEST_DB,
-    collectionName: Collections.TEST_COLLECTION,
-    dataSearch: { dummyVal }
+    dbName: db,
+    collectionName: collection,
+    dataSearch: data
   });
 
-  logMongoEvent(`Found ${dummyVal}`);
+  logMongoEvent(`Found ${data}`);
   console.log(res);
   return res;
 };
 
 export const MongoGetAPI = {
-  getDummyData,
+  simpleGet,
 };

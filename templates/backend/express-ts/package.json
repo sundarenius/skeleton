@@ -12,10 +12,10 @@
   "scripts": {
     "dev": "tsc-watch --onSuccess \"node dist/bin/www.js\"",
     "build": "tsc",
-    "start:dev": "yarn build && NODE_ENV=development node dist/bin/www.js",
-    "start:test": "yarn build && NODE_ENV=test node dist/bin/www.js",
-    "start:staging": "yarn build && NODE_ENV=staging node dist/bin/www.js",
-    "start:prod": "yarn build && NODE_ENV=production node dist/bin/www.js",
+    "start:dev": "yarn build && APP_NAME=default NODE_ENV=development node dist/bin/www.js",
+    "start:test": "yarn build && APP_NAME=default NODE_ENV=test node dist/bin/www.js",
+    "start:staging": "yarn build && APP_NAME=default NODE_ENV=staging node dist/bin/www.js",
+    "start:prod": "yarn build && APP_NAME=default NODE_ENV=production node dist/bin/www.js",
     "lint:check": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix"
   },

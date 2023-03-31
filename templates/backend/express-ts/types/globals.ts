@@ -1,3 +1,5 @@
+import type { Request } from 'express';
+
 export enum HttpStatusCodes {
   BAD_REQUEST = 400,
   UNAUTHORIZED = 401,
@@ -7,5 +9,9 @@ export enum HttpStatusCodes {
   OK = 200
 }
 
-export type TPayload = Record<any, any>;
+export interface IPayload {
+  payload: Record<string, any>;
+  method: Request['method']
+};
+
 export type TSetHttpStatus = (status: HttpStatusCodes) => void;

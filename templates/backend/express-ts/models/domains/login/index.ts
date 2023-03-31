@@ -4,6 +4,8 @@ import { formatRes } from '../index';
 import type { Request } from 'express';
 import { Dbs, Collections } from '../../../types/mongo-types';
 
+interface IResult {}
+
 export interface LoginEntity {
   id: number
   msg: string
@@ -27,7 +29,7 @@ class Login extends Domain {
     if (isNaN(this.data.id)) this.intError('id');
   }
 
-  verifyPayloadAndHandleReq (payload: LoginEntity, method: Request['method'], data: LoginEntity): any {
+  verifyPayloadAndHandleReq (payload: LoginEntity, method: Request['method'], data: LoginEntity): IResult {
     switch (method) {
       case 'POST':
         this.verifyData(payload, {});
@@ -36,14 +38,14 @@ class Login extends Domain {
         this.verifyData(payload, {});
         return data;
       default:
-        return this.customError('Could not handle request');
+        return this.customError('Could not handle request') as never;
     }
   }
 }
 
 const login = async ({ payload, method }: IPayload) => {
   const entity: Login = new Login(payload as LoginEntity);
-  const result = entity.verifyPayloadAndHandleReq(payload as LoginEntity, method, entity.data);
+  const result: IResult = entity.verifyPayloadAndHandleReq(payload as LoginEntity, method, entity.data);
 
   console.log('result');
   console.log(result);

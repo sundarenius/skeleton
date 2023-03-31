@@ -4,6 +4,8 @@ import { formatRes } from '../index';
 import type { Request } from 'express';
 import { Dbs, Collections } from '../../../types/mongo-types';
 
+interface IResult {}
+
 export interface MainEntity {
   msg: string
 }
@@ -24,7 +26,7 @@ class Main extends Domain {
 
   verifyTypes () {}
 
-  verifyPayloadAndHandleReq (payload: MainEntity, method: Request['method'], data: MainEntity): any {
+  verifyPayloadAndHandleReq (payload: MainEntity, method: Request['method'], data: MainEntity): IResult {
     switch (method) {
       case 'POST':
         this.verifyData(payload, {});
@@ -33,14 +35,14 @@ class Main extends Domain {
         this.verifyData(payload, {});
         return data;
       default:
-        return this.customError('Could not handle request');
+        return this.customError('Could not handle request') as never;
     }
   }
 }
 
 const main = async ({ payload, method }: IPayload) => {
   const entity: Main = new Main(payload as MainEntity);
-  const result = entity.verifyPayloadAndHandleReq(payload as MainEntity, method, entity.data);
+  const result: IResult = entity.verifyPayloadAndHandleReq(payload as MainEntity, method, entity.data);
   
   return formatRes(result, HttpStatusCodes.OK);
 }

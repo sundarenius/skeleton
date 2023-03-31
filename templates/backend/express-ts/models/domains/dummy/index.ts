@@ -4,6 +4,8 @@ import { formatRes } from '../index';
 import type { Request } from 'express';
 import { Dbs, Collections } from '../../../types/mongo-types';
 
+interface IResult {}
+
 export interface DummyEntity {
   dummyId: number
   dummyVal: string,
@@ -31,7 +33,7 @@ class Dummy extends Domain {
     if (isNaN(this.data.someInt)) this.intError('someInt');
   }
 
-  verifyPayloadAndHandleReq (payload: DummyEntity, method: Request['method'], data: DummyEntity): any {
+  verifyPayloadAndHandleReq (payload: DummyEntity, method: Request['method'], data: DummyEntity): IResult {
     switch (method) {
       case 'POST':
         this.verifyData(payload, data);
@@ -40,14 +42,14 @@ class Dummy extends Domain {
         this.verifyData(payload, { dummyId: data.dummyId });
         return data;
       default:
-        return this.customError('Could not handle request');
+        return this.customError('Could not handle request') as never;
     }
   }
 }
 
 const dummy = async ({ payload, method }: IPayload) => {
   const entity: Dummy = new Dummy(payload as DummyEntity);
-  const result = entity.verifyPayloadAndHandleReq(payload as DummyEntity, method, entity.data);
+  const result: IResult = entity.verifyPayloadAndHandleReq(payload as DummyEntity, method, entity.data);
   
   return formatRes(result, HttpStatusCodes.OK);
 }

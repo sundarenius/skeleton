@@ -10,13 +10,13 @@ export enum MongoDbTransactionTypes {
 
 // Make it const to set environment as prefix from process.env.NODE_ENV
 export const Dbs = {
-  TEST: `${process.env.NODE_ENV}_${process.env.APP_NAME}_test`,
-  DUMMY: `${process.env.NODE_ENV}_${process.env.APP_NAME}_dummy`,
-  USERS: `${process.env.NODE_ENV}_${process.env.APP_NAME}_users`,
+  TEST: `${process.env.NODE_ENV}-${process.env.APP_NAME}-test-db`,
+  DUMMY: `${process.env.NODE_ENV}_${process.env.APP_NAME}_dummy-db`,
+  USERS: `${process.env.NODE_ENV}-${process.env.APP_NAME}-users-db`,
 };
 
 export enum Collections {
   TEST = 'test',
   DUMMY = 'dummy',
-  ALL_USERS = 'allUsers'
+  ALL_USERS = 'all-users'
 };

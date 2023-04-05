@@ -4,9 +4,9 @@ import type { ThemeModes } from 'types/globals';
 import { updateSessionStorageData } from 'utils/helpers';
 
 const allCustomers = () => ([
-  'Apotea',
-  'Snusbolaget',
-  'Apoteket',
+  'Customer 1',
+  'Customer 2',
+  'Customer 3',
 ]);
 
 interface InitialState {

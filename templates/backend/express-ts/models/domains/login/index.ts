@@ -1,13 +1,15 @@
 import { HttpStatusCodes, IPayload } from '../../../types/globals';
-import { Domain } from '../../utils/helpers';
+import { Domain, payloadType } from '../../utils/helpers';
 import { formatRes } from '../index';
 import type { Request } from 'express';
 import { Dbs, Collections } from '../../../types/mongo-types';
 
-interface IResult {}
-
 export interface LoginEntity {
   id: number
+  msg: string
+}
+
+interface IPayloadData {
   msg: string
 }
 
@@ -19,17 +21,16 @@ class Login extends Domain {
   db = Dbs.USERS;
   collection = Collections.ALL_USERS;
 
-  constructor (payload: LoginEntity) {
+  constructor (payload: IPayloadData) {
     super();
-    this.data.id = Number(payload.id) || 1;
     this.verifyTypes();
   }
 
   verifyTypes () {
-    if (isNaN(this.data.id)) this.intError('id');
+    if (!payloadType.isNumber(this.data.id)) this.intError('id');
   }
 
-  verifyPayloadAndHandleReq (payload: LoginEntity, method: Request['method'], data: LoginEntity): IResult {
+  verifyPayloadAndHandleReq (payload: IPayloadData, method: Request['method'], data: LoginEntity): LoginEntity {
     switch (method) {
       case 'POST':
         this.verifyData(payload, {});
@@ -43,9 +44,9 @@ class Login extends Domain {
   }
 }
 
-const login = async ({ payload, method }: IPayload) => {
-  const entity: Login = new Login(payload as LoginEntity);
-  const result: IResult = entity.verifyPayloadAndHandleReq(payload as LoginEntity, method, entity.data);
+const login = async ({ payload, method }: IPayload<IPayloadData>) => {
+  const entity: Login = new Login(payload as IPayloadData);
+  const result: LoginEntity = entity.verifyPayloadAndHandleReq(payload as IPayloadData, method, entity.data);
 
   console.log('result');
   console.log(result);

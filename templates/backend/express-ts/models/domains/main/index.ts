@@ -4,9 +4,11 @@ import { formatRes } from '../index';
 import type { Request } from 'express';
 import { Dbs, Collections } from '../../../types/mongo-types';
 
-interface IResult {}
-
 export interface MainEntity {
+  msg: string
+}
+
+interface IPayloadData {
   msg: string
 }
 
@@ -18,7 +20,7 @@ class Main extends Domain {
   db = Dbs.TEST;
   collection = Collections.TEST;
 
-  constructor (payload: MainEntity) {
+  constructor (payload: IPayloadData) {
     super();
     this.data.msg = payload.msg.toString();
     this.verifyTypes();
@@ -26,7 +28,7 @@ class Main extends Domain {
 
   verifyTypes () {}
 
-  verifyPayloadAndHandleReq (payload: MainEntity, method: Request['method'], data: MainEntity): IResult {
+  verifyPayloadAndHandleReq (payload: IPayloadData, method: Request['method'], data: MainEntity): MainEntity {
     switch (method) {
       case 'POST':
         this.verifyData(payload, {});
@@ -40,9 +42,9 @@ class Main extends Domain {
   }
 }
 
-const main = async ({ payload, method }: IPayload) => {
-  const entity: Main = new Main(payload as MainEntity);
-  const result: IResult = entity.verifyPayloadAndHandleReq(payload as MainEntity, method, entity.data);
+const main = async ({ payload, method }: IPayload<IPayloadData>) => {
+  const entity: Main = new Main(payload as IPayloadData);
+  const result: MainEntity = entity.verifyPayloadAndHandleReq(payload as IPayloadData, method, entity.data);
   
   return formatRes(result, HttpStatusCodes.OK);
 }

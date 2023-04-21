@@ -1,12 +1,19 @@
 import { HttpStatusCodes, IPayload } from '../../../types/globals';
-import { Domain } from '../../utils/helpers';
+import { Domain, payloadType } from '../../utils/helpers';
 import { formatRes } from '../index';
 import type { Request } from 'express';
 import { Dbs, Collections } from '../../../types/mongo-types';
 
-interface IResult {}
-
+// For db schema
 export interface DummyEntity {
+  dummyId: number
+  dummyVal: string,
+  anotherVal: string,
+  someInt: number
+}
+
+// For payload data
+interface IPayloadData {
   dummyId: number
   dummyVal: string,
   anotherVal: string,
@@ -19,7 +26,7 @@ class Dummy extends Domain {
   db = Dbs.DUMMY;
   collection = Collections.DUMMY;
 
-  constructor (payload: DummyEntity) {
+  constructor (payload: IPayloadData) {
     super();
     this.data.dummyId = Number(payload.dummyId);
     this.data.dummyVal = payload.dummyVal.toString();
@@ -29,11 +36,11 @@ class Dummy extends Domain {
   }
 
   verifyTypes () {
-    if (isNaN(this.data.dummyId)) this.intError('dummyId');
-    if (isNaN(this.data.someInt)) this.intError('someInt');
+    if (!payloadType.isNumber(this.data.dummyId)) this.intError('dummyId');
+    if (!payloadType.isNumber(this.data.someInt)) this.intError('someInt');
   }
 
-  verifyPayloadAndHandleReq (payload: DummyEntity, method: Request['method'], data: DummyEntity): IResult {
+  verifyPayloadAndHandleReq (payload: IPayloadData, method: Request['method'], data: DummyEntity): DummyEntity {
     switch (method) {
       case 'POST':
         this.verifyData(payload, data);
@@ -47,9 +54,9 @@ class Dummy extends Domain {
   }
 }
 
-const dummy = async ({ payload, method }: IPayload) => {
-  const entity: Dummy = new Dummy(payload as DummyEntity);
-  const result: IResult = entity.verifyPayloadAndHandleReq(payload as DummyEntity, method, entity.data);
+const dummy = async ({ payload, method }: IPayload<IPayloadData>) => {
+  const entity: Dummy = new Dummy(payload as IPayloadData);
+  const result: DummyEntity = entity.verifyPayloadAndHandleReq(payload as IPayloadData, method, entity.data);
   
   return formatRes(result, HttpStatusCodes.OK);
 }

@@ -41,3 +41,8 @@ export abstract class Domain {
     
   }
 }
+
+export const payloadType = {
+  isNumber: (payload: any) => typeof Number(payload) === 'number' && !Number.isNaN(Number(payload)),
+  isString: (payload: any) => typeof payload === 'string',
+};

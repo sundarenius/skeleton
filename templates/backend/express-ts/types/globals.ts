@@ -9,8 +9,8 @@ export enum HttpStatusCodes {
   OK = 200
 }
 
-export interface IPayload {
-  payload: Record<string, any>;
+export interface IPayload<I> {
+  payload: I;
   method: Request['method']
 };
 

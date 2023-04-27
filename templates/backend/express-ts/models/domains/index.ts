@@ -1,16 +1,20 @@
 import { HttpStatusCodes, IPayload } from '../../types/globals';
-import login from './login';
 import main from './main';
-import dummy from './dummy';
+import staff from './customers/staff';
+import users from './customers/users';
+import customerInfo from './customers/customer-info';
+import texts from './customers/texts';
+import appointments from './bookings/appointments';
+import feedback from './bookings/feedback';
 
-export const formatRes = (body: IPayload['payload'], statusCode: HttpStatusCodes) => {
+export const formatRes = (body: IPayload<unknown>['payload'], statusCode: HttpStatusCodes) => {
   return {
     body,
     statusCode
   }
 }
 
-const catchWrapper = async (callback: any, payload: IPayload) => {
+const catchWrapper = async (callback: any, payload: IPayload<unknown>) => {
   try {
     return await callback(payload);
   } catch (err: any) {
@@ -26,7 +30,11 @@ const catchWrapper = async (callback: any, payload: IPayload) => {
 }
 
 export const domains = {
-  main: (payload: IPayload) => catchWrapper(main, payload),
-  login: (payload: IPayload) => catchWrapper(login, payload),
-  dummy: (payload: IPayload) => catchWrapper(dummy, payload),
+  main: (payload: IPayload<unknown>) => catchWrapper(main, payload),
+  staff: (payload: IPayload<unknown>) => catchWrapper(staff, payload),
+  users: (payload: IPayload<unknown>) => catchWrapper(users, payload),
+  customerInfo: (payload: IPayload<unknown>) => catchWrapper(customerInfo, payload),
+  texts: (payload: IPayload<unknown>) => catchWrapper(texts, payload),
+  appointments: (payload: IPayload<unknown>) => catchWrapper(appointments, payload),
+  feedback: (payload: IPayload<unknown>) => catchWrapper(feedback, payload),
 };

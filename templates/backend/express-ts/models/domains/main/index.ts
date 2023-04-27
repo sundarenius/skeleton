@@ -28,7 +28,7 @@ class Main extends Domain {
 
   verifyTypes () {}
 
-  verifyPayloadAndHandleReq (payload: IPayloadData, method: Request['method'], data: MainEntity): MainEntity {
+  verifyPayloadAndHandleReq (payload: IPayloadData, method: Request['method'], data: IPayloadData): MainEntity {
     switch (method) {
       case 'POST':
         this.verifyData(payload, {});

@@ -1,3 +1,4 @@
+import clc from 'cli-color';
 import express from 'express';
 import type { Response, Request } from 'express';
 import { domains } from '../../models/domains/index';
@@ -5,7 +6,9 @@ import { IPayload } from '../../types/globals';
 
 const apiRouter = express.Router();
 
-const formatResponse = (body: IPayload['payload'], statusCode: number, res: Response) => {
+const getPath = () => `http://localhost:${process.env.PORT}/api/v1`;
+
+const formatResponse = (body: IPayload<unknown>['payload'], statusCode: number, res: Response) => {
   const options = {
     statusCode,
     body: JSON.stringify({
@@ -24,11 +27,11 @@ const formatResponse = (body: IPayload['payload'], statusCode: number, res: Resp
   res.send(options.body);
 };
 
-const middleware = (domain: (body: IPayload) => Promise<any>) => async (req: Request, res: Response) => {
+const middleware = (domain: (body: IPayload<unknown>) => Promise<any>) => async (req: Request, res: Response) => {
   const method: Request['method'] = req.method;
   console.log(`method: ${method}`);
   const payload = Object.keys(req.body).length > 0 ? req.body : req.query;
-  const { body, statusCode } = await domain(<IPayload>{
+  const { body, statusCode } = await domain(<IPayload<unknown>>{
     payload,
     method
   });
@@ -38,17 +41,63 @@ const middleware = (domain: (body: IPayload) => Promise<any>) => async (req: Req
 
 // ***************** ROUTES *****************
 
-// main route (nothing should be implemented here)
-apiRouter.post('/', middleware(domains.main));
-apiRouter.get('/', middleware(domains.main));
+const methods = {
+  GET: 'get',
+  POST: 'post'
+}
 
-// login route
-apiRouter.post('/login', middleware(domains.login));
-apiRouter.get('/login', middleware(domains.login));
+const routes = [
+  {
+    path: '/',
+    domain: domains.main,
+    methods: [methods.GET, methods.POST]
+  },
+  {
+    path: '/staff',
+    domain: domains.staff,
+    methods: [methods.GET, methods.POST]
+  },
+  {
+    path: '/users',
+    domain: domains.users,
+    methods: [methods.GET, methods.POST]
+  },
+  {
+    path: '/customer-info',
+    domain: domains.customerInfo,
+    methods: [methods.GET, methods.POST]
+  },
+  {
+    path: '/texts',
+    domain: domains.texts,
+    methods: [methods.GET, methods.POST]
+  },
+  {
+    path: '/appointments',
+    domain: domains.appointments,
+    methods: [methods.GET, methods.POST]
+  },
+  {
+    path: '/feedback',
+    domain: domains.feedback,
+    methods: [methods.GET, methods.POST]
+  },
+];
 
-// dummy route
-apiRouter.post('/dummy', middleware(domains.dummy));
-apiRouter.get('/dummy', middleware(domains.dummy));
+console.log(clc.white(`
+*********** ROUTES ***********`,
+  ));
+routes.forEach(route => {
+  if (route.methods.includes(methods.GET)) {
+    apiRouter.post(route.path, middleware(route.domain));
+    console.log(`GET: ${clc.green(getPath())}${clc.blueBright(route.path)}`);
+  }
+  if (route.methods.includes(methods.POST)) {
+    apiRouter.post(route.path, middleware(route.domain));
+    console.log(`POST: ${clc.green(getPath())}${clc.blueBright(route.path)}`);
+  }
+});
+console.log(clc.white('*********** ROUTES ***********'));
 
 // ***************** ROUTES *****************
 

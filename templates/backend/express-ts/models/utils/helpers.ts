@@ -3,7 +3,7 @@ import { MongoAPI } from '../mongo/mongo-api';
 import { Dbs, Collections } from '../../types/mongo-types';
 
 export const apiError = (msg: string, status: HttpStatusCodes = HttpStatusCodes.BAD_REQUEST) => {
-  throw new Error(`${msg}. Status: ${status}`);
+  throw new Error(`${msg} ${status}`);
 }
 
 export abstract class Domain {
@@ -19,6 +19,14 @@ export abstract class Domain {
 
   intError (key: string) {
     apiError(`${key} should be a number`);
+  }
+
+  stringError (key: string, extra?: string) {
+    apiError(`${key} should be a string ${extra}`);
+  }
+
+  booError (key: string, extra?: string) {
+    apiError(`${key} should be a boolean ${extra}`);
   }
   
   customError (msg: string, status: HttpStatusCodes = HttpStatusCodes.BAD_REQUEST) {
@@ -43,6 +51,32 @@ export abstract class Domain {
 }
 
 export const payloadType = {
-  isNumber: (payload: any) => typeof Number(payload) === 'number' && !Number.isNaN(Number(payload)),
+  isNumber: (payload: any) => (typeof Number(payload) === 'number' && !Number.isNaN(Number(payload))),
   isString: (payload: any) => typeof payload === 'string',
+  isArrayWithStrings: (payload: any) => Array.isArray(payload) && payload.filter(v => typeof v !== 'string').length === 0,
+  isBoolean: (payload: any) => typeof payload === 'boolean',
 };
+
+export const encryptPwd = (pwd: string) => pwd
+  .replace(/1/g, 'Z').replace(/2/g, '9').replace(/3/g, 'G').replace(/4/g, '1sx')
+  .replace(/5/g, '9q').replace(/6/g, 'kll').replace(/7/g, '3').replace(/8/g, 'p2')
+  .replace(/9/g, 'sdf').replace(/0/g, 'Jdf').replace(/q/g, 'Z').replace(/w/g, '2dcc')
+  .replace(/e/g, 'vvd').replace(/r/g, 'Mdfs').replace(/t/g, 'hgfh').replace(/y/g, '23dd')
+  .replace(/u/g, 'hhg').replace(/i/g, '9').replace(/o/g, 'dfs').replace(/p/g, '4')
+  .replace(/å/g, '8').replace(/a/g, 'W').replace(/s/g, '7').replace(/d/g, '8')
+  .replace(/f/g, 'Chgf').replace(/g/g, 'R').replace(/h/g, '9').replace(/j/g, '6')
+  .replace(/k/g, 'R').replace(/l/g, 'adg').replace(/ö/g, 'C').replace(/ä/g, '3fd')
+  .replace(/z/g, 'V').replace(/x/g, 'Adf').replace(/c/g, 'W').replace(/v/g, '89')
+  .replace(/b/g, 'M').replace(/g/g, '5').replace(/m/g, '7').replace(/,/g, '90cc')
+  .replace(/-/g, '1S');
+
+
+export const extractDayFromCustomerId = (customerId: string) => {
+  const split = customerId.toString().split('0');
+  const day = split[split.length - 1];
+  return day;
+}
+
+export const base64String = (str: string) => Buffer.from(str).toString("base64");
+export const decodeBase64 = (str: string) => Buffer.from(str, "base64").toString("utf-8");
+

@@ -1,21 +1,21 @@
 import MongoInstance from '../mongo';
 import {
-  Dbs,
   Collections,
   MongoDbTransactionTypes,
 } from '../../../types/mongo-types';
 import { logMongoEvent } from './index';
 
-const simpleUpdate = async <IData>(newData: IData, prevData: IData, db: typeof Dbs, collection: Collections) => {
+const simpleUpdate = async <IData>(newData: IData, prevData: any, db: string, collection: Collections, collectionCallback: any = false) => {
   const res: Array<unknown> = await MongoInstance({
     operation: MongoDbTransactionTypes.UPDATE_ONE,
     dbName: db,
     collectionName: collection,
     dataSearch: prevData,
     newData: newData,
+    collectionCallback
   });
 
-  logMongoEvent(`Updated ${prevData} to ${newData} from DB`);
+  logMongoEvent(`Updated or insterted data in MongoDB`);
   console.log(res);
   return res;
 };

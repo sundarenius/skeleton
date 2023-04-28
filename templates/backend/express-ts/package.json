@@ -1,5 +1,5 @@
 {
-  "name": "@myproject/server",
+  "name": "@bookified/server",
   "version": "1.0.0",
   "description": "New backend node ts project",
   "author": "",
@@ -12,12 +12,13 @@
   "scripts": {
     "dev": "tsc-watch --onSuccess \"node dist/bin/www.js\"",
     "build": "tsc",
-    "start:dev": "yarn build && APP_NAME=default NODE_ENV=development node dist/bin/www.js",
-    "start:test": "yarn build && APP_NAME=default NODE_ENV=test node dist/bin/www.js",
-    "start:staging": "yarn build && APP_NAME=default NODE_ENV=staging node dist/bin/www.js",
-    "start:prod": "yarn build && APP_NAME=default NODE_ENV=production node dist/bin/www.js",
+    "start:dev": "yarn build && APP_NAME=bookified NODE_ENV=development node dist/bin/www.js",
+    "start:test": "yarn build && APP_NAME=bookified NODE_ENV=test node dist/bin/www.js",
+    "start:staging": "yarn build && APP_NAME=bookified NODE_ENV=staging node dist/bin/www.js",
+    "start:prod": "yarn build && APP_NAME=bookified NODE_ENV=production node dist/bin/www.js",
     "lint:check": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix"
+    "lint:fix": "eslint src --ext .ts --fix",
+    "refresh-local-dbs": "sh -c './drop-all-local-dbs.sh' && node ./refresh-db-dev.js"
   },
   "keywords": [],
   "dependencies": {
@@ -33,8 +34,9 @@
     "module-alias": "^2.2.2",
     "mongodb": "^4.1.3",
     "morgan": "^1.10.0",
+    "node-fetch": "2",
     "source-map-support": "^0.5.19",
-    "uuid": "^8.3.2"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/cli-color": "^2.0.2",

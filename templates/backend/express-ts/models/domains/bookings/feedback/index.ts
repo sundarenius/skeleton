@@ -1,18 +1,52 @@
-import { HttpStatusCodes, IPayload } from '../../../../types/globals';
+import type { Request } from 'express';
+import {
+  HttpStatusCodes,
+  IPayload,
+  Currencies,
+} from '../../../../types/globals';
 import { Domain, payloadType } from '../../../utils/helpers';
 import { formatRes } from '../../index';
-import type { Request } from 'express';
 import { Dbs, Collections } from '../../../../types/mongo-types';
+import type { IFilter } from '../../../../types/globals';
+import { get, update } from './service';
+
+export interface IAttendee {
+  name: string,
+  phone: string,
+}
 
 // For db schema
 export interface FeedbackEntity {
-  dummyId: number
+  customerId: string,
+  appointmentId: string,
+  service: string, // the service offered by the customer
+  startTime: number,
+  staff: null|string, // the member of the staff of null if not specifically set
+  price: number,
+  currency: Currencies,
+  attendee: IAttendee, // start with just one attendee, if needed make it "attendees"
+  review: string,
+  rating: number, // 0 - 5
+  public: boolean, // should it be displayed on website?
+  seen: boolean,
+  createdAt: number
 }
 
 // For payload data
-interface IPayloadData {
-  dummyId: number
-}
+export type IPayloadData = Pick<FeedbackEntity,
+'customerId' |
+'appointmentId' |
+'service' |
+'startTime' |
+'staff' |
+'price' |
+'currency' |
+'attendee' |
+'review' |
+'public' |
+'seen' |
+'rating'
+> & { filter?: IFilter }
 
 class Feedback extends Domain {
   public data = {} as FeedbackEntity;
@@ -22,33 +56,60 @@ class Feedback extends Domain {
 
   constructor (payload: IPayloadData) {
     super();
-    this.data.dummyId = Number(payload.dummyId);
+    this.data.customerId = payload.customerId;
+    this.data.appointmentId = payload.appointmentId;
+    this.data.service = payload.service;
+    this.data.startTime = payload.startTime;
+    this.data.staff = payload.staff;
+    this.data.price = payload.price;
+    this.data.currency = payload.currency;
+    this.data.attendee = payload.attendee;
+    this.data.review = payload.review;
+    this.data.public = payload.public;
+    this.data.seen = payload.seen;
+    this.data.rating = payload.rating;
     this.verifyTypes();
   }
 
   verifyTypes () {
-    if (!payloadType.isNumber(this.data.dummyId)) this.intError('dummyId');
+    if (!payloadType.isString(this.data.customerId)) this.stringError('customerId');
+    if (this.data.appointmentId && !payloadType.isString(this.data.appointmentId)) this.stringError('appointmentId');
+    if (this.data.service && !payloadType.isString(this.data.service)) this.stringError('service');
   }
 
-  verifyPayloadAndHandleReq (payload: IPayloadData, method: Request['method'], data: IPayloadData): FeedbackEntity {
+  async verifyPayloadAndHandleReq (payload: IPayloadData, method: Request['method'], data: FeedbackEntity): Promise<any> {
     switch (method) {
       case 'POST':
         this.verifyData(payload, data);
-        return data;
+        return this.handlePost(data);
       case 'GET':
-        this.verifyData(payload, { dummyId: data.dummyId });
-        return data;
+        this.verifyData(payload, { customerId: data.customerId });
+        return this.handleGet({
+          customerId: data.customerId,
+          ...data.appointmentId && { appointmentId: data.appointmentId },
+          ...payload.filter && { filter: payload.filter },
+        });
       default:
         return this.customError('Could not handle request') as never;
     }
   }
+
+  async handlePost (data: FeedbackEntity) {
+    const res = await update<FeedbackEntity>(data, this.db, this.collection);
+    return res;
+  }
+  
+  async handleGet (data: { customerId: string, appointmentId?: string, filter?: IFilter }) {
+    const res = await get(data, this.db, this.collection);
+    return res;
+  }
 }
 
-const dummy = async ({ payload, method }: IPayload<IPayloadData>) => {
+const feedback = async ({ payload, method }: IPayload<IPayloadData>) => {
   const entity: Feedback = new Feedback(payload as IPayloadData);
-  const result: FeedbackEntity = entity.verifyPayloadAndHandleReq(payload as IPayloadData, method, entity.data);
+  const result: Promise<FeedbackEntity> = await entity.verifyPayloadAndHandleReq(payload as IPayloadData, method, entity.data);
   
   return formatRes(result, HttpStatusCodes.OK);
 }
 
-export default dummy;
+export default feedback;

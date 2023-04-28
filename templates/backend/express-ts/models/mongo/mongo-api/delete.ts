@@ -1,12 +1,11 @@
 import MongoInstance from '../mongo';
 import {
-  Dbs,
   Collections,
   MongoDbTransactionTypes,
 } from '../../../types/mongo-types';
 import { logMongoEvent } from './index';
 
-const simpleDelete = async <IData>(data: IData, db: typeof Dbs, collection: Collections) => {
+const simpleDelete = async <IData>(data: IData, db: string, collection: Collections) => {
   const res: Array<unknown> = await MongoInstance({
     operation: MongoDbTransactionTypes.DELETE_ONE,
     dbName: db,

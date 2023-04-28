@@ -14,4 +14,17 @@ export interface IPayload<I> {
   method: Request['method']
 };
 
+export enum Templates {
+  STANDARD_WHITE = 'standard-white'
+}
+
 export type TSetHttpStatus = (status: HttpStatusCodes) => void;
+
+export enum Currencies {
+  SEK = 'SEK'
+}
+
+export interface IFilter {
+  from?: number
+  end?: number,
+}

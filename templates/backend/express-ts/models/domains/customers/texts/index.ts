@@ -1,18 +1,24 @@
-import { HttpStatusCodes, IPayload } from '../../../../types/globals';
+import type { Request } from 'express';
+import {
+  HttpStatusCodes,
+  IPayload,
+} from '../../../../types/globals';
 import { Domain, payloadType } from '../../../utils/helpers';
 import { formatRes } from '../../index';
-import type { Request } from 'express';
 import { Dbs, Collections } from '../../../../types/mongo-types';
+import { get, update } from './service';
 
 // For db schema
 export interface TextsEntity {
-  dummyId: number
+  customerId: string,
+  texts: Record<string, string> // frontend landing page texts
 }
 
 // For payload data
-interface IPayloadData {
-  dummyId: number
-}
+export type IPayloadData = Pick<TextsEntity,
+'customerId' |
+'texts'
+>
 
 class Texts extends Domain {
   public data = {} as TextsEntity;
@@ -22,33 +28,45 @@ class Texts extends Domain {
 
   constructor (payload: IPayloadData) {
     super();
-    this.data.dummyId = Number(payload.dummyId);
+    this.data.customerId = payload.customerId;
+    this.data.texts = payload.texts;
     this.verifyTypes();
   }
 
   verifyTypes () {
-    if (!payloadType.isNumber(this.data.dummyId)) this.intError('dummyId');
+    if (!payloadType.isString(this.data.customerId)) this.stringError('customerId');
+    if (this.data.texts && !payloadType.isArrayWithStrings(Object.values(this.data.texts))) this.stringError('texts', 'an object of strings');
   }
 
-  verifyPayloadAndHandleReq (payload: IPayloadData, method: Request['method'], data: TextsEntity): TextsEntity {
+  async verifyPayloadAndHandleReq (payload: IPayloadData, method: Request['method'], data: TextsEntity): Promise<any> {
     switch (method) {
       case 'POST':
         this.verifyData(payload, data);
-        return data;
+        return this.handlePost(data);
       case 'GET':
-        this.verifyData(payload, { dummyId: data.dummyId });
-        return data;
+        this.verifyData(payload, { customerId: data.customerId });
+        return this.handleGet(data.customerId);
       default:
         return this.customError('Could not handle request') as never;
     }
   }
+
+  async handlePost (data: TextsEntity) {
+    const res = await update<TextsEntity>(data, this.db, this.collection);
+    return res;
+  }
+  
+  async handleGet (customerId: string) {
+    const res = await get(customerId, this.db, this.collection);
+    return res;
+  }
 }
 
-const dummy = async ({ payload, method }: IPayload<IPayloadData>) => {
+const texts = async ({ payload, method }: IPayload<IPayloadData>) => {
   const entity: Texts = new Texts(payload as IPayloadData);
-  const result: TextsEntity = entity.verifyPayloadAndHandleReq(payload as IPayloadData, method, entity.data);
+  const result: Promise<TextsEntity> = await entity.verifyPayloadAndHandleReq(payload as IPayloadData, method, entity.data);
   
   return formatRes(result, HttpStatusCodes.OK);
 }
 
-export default dummy;
+export default texts;

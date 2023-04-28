@@ -2,13 +2,14 @@ import clc from 'cli-color';
 import express from 'express';
 import type { Response, Request } from 'express';
 import { domains } from '../../models/domains/index';
-import { IPayload } from '../../types/globals';
+import { IPayload, IFilter } from '../../types/globals';
 
 const apiRouter = express.Router();
 
-const getPath = () => `http://localhost:${process.env.PORT}/api/v1`;
+const getPath = () => `http://localhost:${process.env.PORT || '3030'}/api/v1`;
 
-const formatResponse = (body: IPayload<unknown>['payload'], statusCode: number, res: Response) => {
+const formatResponse = (body: IPayload<Record<any, any>>['payload'], statusCode: number, res: Response) => {
+  if (Object.keys(body).length > 0) delete body._id;
   const options = {
     statusCode,
     body: JSON.stringify({
@@ -31,6 +32,11 @@ const middleware = (domain: (body: IPayload<unknown>) => Promise<any>) => async 
   const method: Request['method'] = req.method;
   console.log(`method: ${method}`);
   const payload = Object.keys(req.body).length > 0 ? req.body : req.query;
+  console.log('payload:');
+  console.log(payload);
+  payload.filter = {} as IFilter;
+  if (payload['filter.from']) { payload.filter.from = Number(payload['filter.from']) };
+  if (payload['filter.end']) { payload.filter.end = Number(payload['filter.end']) };
   const { body, statusCode } = await domain(<IPayload<unknown>>{
     payload,
     method
@@ -63,8 +69,8 @@ const routes = [
     methods: [methods.GET, methods.POST]
   },
   {
-    path: '/customer-info',
-    domain: domains.customerInfo,
+    path: '/customer',
+    domain: domains.customer,
     methods: [methods.GET, methods.POST]
   },
   {
@@ -82,6 +88,11 @@ const routes = [
     domain: domains.feedback,
     methods: [methods.GET, methods.POST]
   },
+  {
+    path: '/set-paid',
+    domain: domains.paid,
+    methods: [methods.POST]
+  },
 ];
 
 console.log(clc.white(`
@@ -89,7 +100,7 @@ console.log(clc.white(`
   ));
 routes.forEach(route => {
   if (route.methods.includes(methods.GET)) {
-    apiRouter.post(route.path, middleware(route.domain));
+    apiRouter.get(route.path, middleware(route.domain));
     console.log(`GET: ${clc.green(getPath())}${clc.blueBright(route.path)}`);
   }
   if (route.methods.includes(methods.POST)) {

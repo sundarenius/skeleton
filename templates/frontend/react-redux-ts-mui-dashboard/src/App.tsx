@@ -30,10 +30,6 @@ const App:FC<Props> = ({ initData }): JSX.Element => {
     }
   }, [dispatch, initData]);
 
-  useEffect(() => {
-    getMerchantData(merchant);
-  }, [merchant]);
-
   return (
     <Theme themeMode={themeMode}>
       <AppWrapper>
@@ -43,18 +39,6 @@ const App:FC<Props> = ({ initData }): JSX.Element => {
       </AppWrapper>
     </Theme>
   );
-};
-
-const getMerchantData = (merchant) => {
-  store.dispatch(contextActions.setIsFetchingData(true));
-  // Adding a timeout to avoid duplicate calls at intial load
-  clearTimeout(window.INIT_DATA_FETCH);
-  window.INIT_DATA_FETCH = setTimeout(() => {
-    // Here is where the API call should happen
-    console.log('initFetchData triggered');
-    console.log(merchant);
-    store.dispatch(contextActions.setIsFetchingData(false));
-  }, 150);
 };
 
 export default App;

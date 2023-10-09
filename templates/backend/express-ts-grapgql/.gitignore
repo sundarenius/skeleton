@@ -1,0 +1,6 @@
+./node_modules/*
+
+# Ignore built and data files except build/index.js
+**/data
+**/dist
+**/build

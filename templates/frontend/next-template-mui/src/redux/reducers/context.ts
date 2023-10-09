@@ -2,11 +2,15 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface InitialState {
-  dummy: null
+  dummy: null,
+  drawerLeft: number,
+  drawerRight: number,
 }
 
 const initialState: InitialState = {
-  dummy: null
+  dummy: null,
+  drawerLeft: 240,
+  drawerRight: 200,
 };
 
 export const contextSlice = createSlice({

@@ -11,6 +11,12 @@ export enum Environments {
 }
 
 export enum WebStorageKeys {
-  SESSION_DATA = 'APP_NAME_SESSION_DATA'
+  SESSION_DATA = 'FREE_DATE_SESSION_USER'
 }
 /* **************** EMUMS ****************** */
+
+/* **************** INTERFACES ****************** */
+
+export interface IUserSessionData {}
+
+/* **************** INTERFACES ****************** */

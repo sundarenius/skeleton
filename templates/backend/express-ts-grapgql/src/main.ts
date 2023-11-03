@@ -1,21 +1,19 @@
 import createError from 'http-errors';
 import express from 'express';
+import type { Express } from 'express';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cors from 'cors';
 import apiRouter from './routes/api-router';
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import { typeDefs } from './graphql/types/typeDefs';
-import { resolvers } from './graphql/resolvers/resolvers';
+import path from 'path';
 
 // eslint-disable-next-line no-underscore-dangle
 
 const app: any = express();
 
 const whiteListedOrigins: string[] = [
-  'http://localhost:5000',
-  'http://localhost:8080',
+  'http://localhost:3000',
+  'http://localhost:3030/',
 ];
 
 const corsOptionsDelegate = (req: any, callback: any) => {
@@ -43,7 +41,9 @@ const initExpressConfig = async () => {
 
   app.use('/api/v1', apiRouter);
 
-  await initApolloServer();
+  if (process.env.SERVE_STATIC) {
+    serveStatic(app);
+  }
 
   // error handlers
   app.use((req: any, res: any, next: any) => {
@@ -60,26 +60,11 @@ const initExpressConfig = async () => {
   });
 
   return app;
-}
+};
 
-const initApolloServer = async () => {
-  // graphql route not working
-  interface ApolloContext {
-    token?: String;
-  }
-  const server = new ApolloServer<ApolloContext>({
-    typeDefs,
-    resolvers,
-  });
-
-  await server.start();
-
-  app.use(
-    '/graphql',
-    expressMiddleware(server, {
-      context: async ({ req }) => ({ token: req.headers.token }),
-    }),
-  );
-}
+// eslint-disable-next-line @typescript-eslint/no-shadow
+const serveStatic = (app: Express) => {
+  console.log('Mode: process.env.PROD_AND_SERVE_STATIC');
+};
 
 export default initExpressConfig;

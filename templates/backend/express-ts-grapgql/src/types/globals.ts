@@ -11,12 +11,28 @@ export enum HttpStatusCodes {
 
 export interface IPayload<I> {
   payload: I;
-  method: Request['method']
-};
+  method: Request['method'],
+  auth: string,
+  filter?: IFilter
+}
 
 export type TSetHttpStatus = (status: HttpStatusCodes) => void;
 
 export interface IPayloadFilter {
   from?: number
   end?: number,
+}
+
+export enum Methods {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+}
+
+export interface IFilter {
+  keyMatch: Record<string, Array<string|boolean|number>> | null,
+  orderByKey: string,
+  startIndex: number,
+  max?: number,
 }

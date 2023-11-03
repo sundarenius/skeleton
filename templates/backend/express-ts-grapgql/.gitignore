@@ -1,6 +1,8 @@
-./node_modules/*
-
-# Ignore built and data files except build/index.js
-**/data
-**/dist
+**/node_modules
+**/.DS_Store
+**/.nuxt
+**/certs
+**/.env
 **/build
+**/dist
+data

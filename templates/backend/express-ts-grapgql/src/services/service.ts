@@ -1,1 +1,0 @@
-// Create reusable services that interact with your database, external APIs, or other third-party services. This keeps your business logic separate from your resolvers.

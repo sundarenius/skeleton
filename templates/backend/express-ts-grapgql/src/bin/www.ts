@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-import initExpressConfig from '../src/main';
+import initExpressConfig from '../main';
 
 /**
   * Get port from environment and store in Express.
@@ -16,6 +16,6 @@ const handleStart = async () => {
   app.set('port', port);
 
   app.listen(app.get('port'), () => console.log(`🚀 Server ready at port: ${port}`));
-}
+};
 
 handleStart();

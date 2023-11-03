@@ -34,6 +34,15 @@ class ArticleService extends MongoTransactions implements ArticleRepository {
     return {} as any;
   }
 
+  async getMany(filter: IFilter): Promise<Article[] | null> {
+    const { id } = this.payload.getData();
+    // const data = await this.findOne({
+    //   query: { likeId },
+    // });
+
+    return {} as any;
+  }
+
   // create happens after an Accounts was made
   async create(): Promise<any> {
     const newData = this.payload.getData(true);
@@ -54,6 +63,7 @@ const article = async ({
   method,
   payload,
   auth,
+  filter,
 }: IPayload<IPayloadData>) => {
   const service = new ArticleService(payload as IPayloadData);
 
@@ -68,7 +78,7 @@ const article = async ({
 
   switch (method) {
     case Methods.GET:
-      return getBodyRes(service.getOne);
+      return getBodyRes(filter ? service.getMany : service.getOne);
     case Methods.POST:
       return getBodyRes(service.create);
 

@@ -1,8 +1,8 @@
 import { Collections } from '../mongodb/mongo-config';
-import { HttpStatusCodes } from '../types/globals';
+import { getModelData } from '../utils/helpers';
 
 export interface ArticleEntity {
-  id: string,
+  customerId: string,
   title: string,
   content: string,
   created: number,
@@ -11,7 +11,7 @@ export interface ArticleEntity {
 class Article implements ArticleEntity {
   public static collection = Collections.ARTICLES;
 
-  id: string;
+  customerId: string;
 
   title: string;
 
@@ -20,7 +20,7 @@ class Article implements ArticleEntity {
   created: number;
 
   constructor(payload: ArticleEntity) {
-    this.id = payload.id;
+    this.customerId = payload.customerId;
     this.title = payload.title;
     this.content = payload.content;
     this.created = payload.created;
@@ -28,21 +28,13 @@ class Article implements ArticleEntity {
 
   getData(allRequired = false): Partial<ArticleEntity> {
     const data: any = {
-      id: this.id,
+      customerId: this.customerId,
       title: this.title,
       content: this.content,
       created: this.created,
     };
 
-    // Remove properties with undefined values
-    Object.keys(data).forEach((key) => {
-      if (allRequired && data[key] === undefined) {
-        throw new Error(`This method requires all fields ${HttpStatusCodes.BAD_REQUEST}`);
-      }
-      return data[key] === undefined && delete data[key];
-    });
-
-    return data as Partial<ArticleEntity>;
+    return getModelData<ArticleEntity>(allRequired, data);
   }
 }
 

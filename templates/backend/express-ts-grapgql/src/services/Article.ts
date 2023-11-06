@@ -10,6 +10,7 @@ import {
   decodeJwtToken,
 } from '../utils/auth';
 import type { ArticleRepository } from '../repositories/ArticleRepository';
+import { generateBlogPost } from '../utils/create-blog-post';
 
 type IPayloadData = Partial<Article>
 
@@ -26,30 +27,41 @@ class ArticleService extends MongoTransactions implements ArticleRepository {
   }
 
   async getOne(): Promise<Article | null> {
-    const { id } = this.payload.getData();
-    // const data = await this.findOne({
-    //   query: { likeId },
-    // });
+    const { customerId } = this.payload.getData();
+    const data = await this.findOne({
+      query: { customerId },
+    });
 
-    return {} as any;
+    if (!data) throw new Error(`Article not found ${HttpStatusCodes.BAD_REQUEST}`);
+    
+    return data as any;
   }
 
   async getMany(filter: IFilter): Promise<Article[] | null> {
-    const { id } = this.payload.getData();
-    // const data = await this.findOne({
-    //   query: { likeId },
-    // });
+    // need to make a callback collection instead like in connect platform
+    const data = await this.findOne({
+      query: { filter },
+    });
 
-    return {} as any;
+    return data as any;
   }
 
   // create happens after an Accounts was made
   async create(): Promise<any> {
     const newData = this.payload.getData(true);
+    // get config from Config table and choose random category with subject
+    // also fetch previous titles
+    const res = await generateBlogPost(config as any);
+    const newBlogData = new Article({
+      customerId: '',
+      title: '',
+      content: '',
+      created: new Date().getTime(),
+    });
+
     await this.createOne({
       newData: {
-        ...newData,
-        created: new Date().getTime(),
+        ...newBlogData,
       },
     } as any);
 
@@ -57,6 +69,15 @@ class ArticleService extends MongoTransactions implements ArticleRepository {
       msg: 'Succesfully created new article',
     };
   }
+}
+
+// Generate config from another collection and choose random subject and category from an array.
+// Make another model with these values:
+const config = {
+  subject: 'world politics',
+  category: 'piece and security',
+  keywords: ['piece', 'security', 'Israel', 'War', 'Food', 'Water', 'Planet', 'Green future'],
+  previousTitles: [],
 }
 
 const article = async ({
